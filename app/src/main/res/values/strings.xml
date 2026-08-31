@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Floating D-pad</string>
+
+    <string name="channel_overlay">Overlay</string>
+    <string name="channel_overlay_description">Shown while the D-pad is on screen.</string>
+    <string name="channel_boot">Start after reboot</string>
+
+    <string name="action_stop">Stop</string>
+    <string name="action_reconnect">Reconnect</string>
+
+    <string name="status_ready">Connected — keys are going through</string>
+    <string name="status_connecting">Connecting to Shizuku…</string>
+    <string name="status_not_installed">Shizuku is not installed</string>
+    <string name="status_not_running">Shizuku is not running — start it, then reconnect</string>
+    <string name="status_permission_required">Shizuku has not granted access yet</string>
+    <string name="status_failed">Could not reach Shizuku</string>
+
+    <string name="overlay_permission_missing">Grant “Display over other apps” first</string>
+
+    <string name="boot_prompt_title">Floating D-pad did not start</string>
+    <string name="boot_prompt_text">Android blocked the start after reboot. Tap to start it.</string>
+</resources>
