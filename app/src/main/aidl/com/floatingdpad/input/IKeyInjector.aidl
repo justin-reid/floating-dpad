@@ -18,8 +18,11 @@ interface IKeyInjector {
      *                 identical for the initial down, every repeat, and the final up, or
      *                 long-press detection in the receiving app breaks.
      */
-    oneway void injectKey(int keyCode, int action, int repeatCount, long downTime);
+    oneway void injectKey(int keyCode, int action, int repeatCount, long downTime) = 1;
 
-    /** Required by Shizuku's UserService contract; the transaction id is fixed. */
+    /**
+     * Required by Shizuku's UserService contract; that fixed id is why every method
+     * here needs an explicit one -- aidl refuses a mix of assigned and unassigned ids.
+     */
     void destroy() = 16777114;
 }
