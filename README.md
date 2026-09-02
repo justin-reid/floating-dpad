@@ -107,14 +107,20 @@ from inside a touch handler, where a synchronous read is what you want.
 |---|---|---|
 | 1 | Scaffold + CI producing a debug APK artifact | done |
 | 2 | Overlay shell — floating cluster, drag-to-move, position persisted | done |
-| 3 | Shizuku injection | done, **unverified on device** |
+| 3 | Shizuku injection | done, verified on device |
 | 4 | Key repeat + haptics | done |
 | 5 | Config UI — size, opacity, layout preset, lock, collapse, per-button keycode | done |
 | 6 | Reboot handling — boot receiver, visible "not running" state | done |
-| 7 | Accessibility fallback backend | not started (optional) |
+| 7 | Accessibility fallback backend | not needed |
 
-Milestone 3 is the whole risk and none of this has been run on hardware yet. If Select
-does not register, try switching it from `DPAD_CENTER` to `ENTER` under *What each button
-sends* before assuming injection is broken.
+Verified driving TiviMate on an Android 16 tablet on 2026-09-01: injection works, the
+guide is navigable, and no per-button keycode override was needed — `DPAD_CENTER` was
+right for Select. The override dropdown stays because a future TiviMate build may
+disagree.
+
+Milestone 7 was contingent on the Shizuku path being unusable. It isn't, so it is not
+being built — an accessibility backend walks the node tree rather than driving TiviMate's
+own focus logic, and would be worst exactly in the EPG grid. `KeySender` remains an
+interface, so it can still be added later without the overlay code changing.
 
 [Shizuku]: https://shizuku.rikka.app/
