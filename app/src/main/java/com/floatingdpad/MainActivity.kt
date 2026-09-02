@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     canDrawOverlays = canDrawOverlays,
                     overlayRunning = overlayRunning,
                     onGrantOverlayPermission = ::openOverlaySettings,
-                    onToggleOverlay = ::setOverlayRunning,
+                    onToggleOverlay = ::applyOverlayRunning,
                     onShizukuAction = ::handleShizukuAction,
                 )
             }
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
         overlayRunning = OverlayService.isRunning
     }
 
-    private fun setOverlayRunning(run: Boolean) {
+    private fun applyOverlayRunning(run: Boolean) {
         if (run) {
             if (!canDrawOverlays) {
                 openOverlaySettings()
