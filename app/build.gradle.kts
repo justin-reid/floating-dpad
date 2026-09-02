@@ -16,6 +16,23 @@ android {
         versionName = "0.1.0"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            // Point the debug config at an explicit file rather than trusting AGP to
+            // find ~/.android/debug.keystore -- it resolves that through
+            // ANDROID_USER_HOME / user.home, which does not agree with $HOME on a CI
+            // runner. When the file is absent (a normal local checkout) AGP falls back
+            // to its usual auto-generated keystore, so local builds are unaffected.
+            val shared = rootProject.file("debug.keystore")
+            if (shared.exists()) {
+                storeFile = shared
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
+    }
+
     buildFeatures {
         // AGP 8 disables AIDL by default; IKeyInjector needs it.
         aidl = true

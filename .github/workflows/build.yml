@@ -28,8 +28,8 @@ jobs:
             echo "::error::DEBUG_KEYSTORE_B64 is not set. Without it this build would be signed with a throwaway key and could not be installed over an existing copy."
             exit 1
           fi
-          mkdir -p ~/.android
-          printf '%s' "$DEBUG_KEYSTORE_B64" | base64 -d > ~/.android/debug.keystore
+          printf '%s' "$DEBUG_KEYSTORE_B64" | base64 -d > debug.keystore
+          test -s debug.keystore
 
       # The wrapper jar is not committed, so Gradle itself is pinned here instead.
       - uses: gradle/actions/setup-gradle@v4
@@ -38,6 +38,14 @@ jobs:
 
       - name: Assemble debug APK
         run: gradle assembleDebug --stacktrace
+
+      # If this fingerprint ever changes, updates stop installing over an existing copy
+      # and Android says only "App not installed". Print it so the cause is visible.
+      - name: Report signing certificate
+        run: |
+          APKSIGNER=$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs \
+            app/build/outputs/apk/debug/app-debug.apk | grep -i 'SHA-256 digest'
 
       # Debug builds are signed with the auto-generated debug keystore, so this
       # artifact is directly sideloadable from the workflow run page.

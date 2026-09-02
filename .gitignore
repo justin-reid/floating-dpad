@@ -8,3 +8,4 @@ build/
 .cxx
 local.properties
 gradle/wrapper/gradle-wrapper.jar
+debug.keystore
