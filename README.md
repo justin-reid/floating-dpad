@@ -61,6 +61,29 @@ then
 
 Android Studio will do both for you when it opens the project.
 
+### Signing
+
+CI builds are signed with a fixed debug keystore, restored from the `DEBUG_KEYSTORE_B64`
+repository secret into `debug.keystore` at the repo root (gitignored). `app/build.gradle.kts`
+points the debug `signingConfig` at that file explicitly.
+
+This matters more than it sounds. Runners are fresh VMs, so AGP would otherwise generate a
+new random debug keystore per run, and Android refuses to update an installed app across a
+signature change — reporting only *"App not installed"* with no explanation. Note that
+writing the key to `~/.android/debug.keystore` is **not** sufficient: AGP resolves that
+default through `ANDROID_USER_HOME` / the `user.home` system property, which does not agree
+with `$HOME` on a runner. Hence the explicit path.
+
+Each build prints its certificate fingerprint (`Report signing certificate`) so a
+regression is visible in the log. It should stay:
+
+```
+e314ff50a753ed41d3ad61be50b06887402e899302ec0d7fea0fa55d44fe3e4c
+```
+
+The signing config is guarded on the file existing, so a plain local checkout still gets
+AGP's usual auto-generated debug key and builds normally.
+
 ### Versions
 
 Everything is pinned in [`gradle/libs.versions.toml`](gradle/libs.versions.toml) — that
