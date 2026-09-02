@@ -63,10 +63,11 @@ panel.
 ## Getting the app
 
 Every push builds an installable APK. Open [**Actions**][actions], click the most recent
-run, and download the **floating-dpad-debug** artifact.
+run, and download the artifact under **Artifacts** — it's named `floating-dpad-` followed
+by the short commit hash of that build, so you can tell your downloads apart.
 
-Two things to expect: it downloads as a `.zip`, so extract the `.apk` inside before
-installing, and you'll need to be signed in to GitHub to download it at all.
+Two things to expect: it downloads as a `.zip`, so extract the `floating-dpad-debug.apk`
+inside before installing, and you'll need to be signed in to GitHub to download it at all.
 
 ## Building it yourself
 

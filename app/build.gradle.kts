@@ -4,6 +4,13 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// Without this the APK is named after the Gradle module, i.e. app-debug.apk. AGP builds
+// output names as "<archivesName>-<variant>.apk", so this applies to local builds too,
+// not just the CI artifact.
+base {
+    archivesName.set("floating-dpad")
+}
+
 android {
     namespace = "com.floatingdpad"
     compileSdk = 36
