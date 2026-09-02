@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
                     onGrantOverlayPermission = ::openOverlaySettings,
                     onToggleOverlay = ::applyOverlayRunning,
                     onShizukuAction = ::handleShizukuAction,
+                    onOpenDeveloperOptions = ::openDeveloperOptions,
                 )
             }
         }
@@ -90,6 +91,17 @@ class MainActivity : ComponentActivity() {
             ShizukuKeySender.State.PERMISSION_REQUIRED -> ShizukuKeySender.requestPermission()
             else -> ShizukuKeySender.connect()
         }
+    }
+
+    /**
+     * Wireless debugging lives inside Developer options and has no action of its own,
+     * so this drops the user as close to it as the platform allows.
+     */
+    private fun openDeveloperOptions() {
+        val opened = runCatching {
+            startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
+        }.isSuccess
+        if (!opened) runCatching { startActivity(Intent(Settings.ACTION_SETTINGS)) }
     }
 
     private fun openShizuku() {

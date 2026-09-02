@@ -29,10 +29,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.floatingdpad.input.DpadButton
 import com.floatingdpad.input.KeyCodeCatalog
 import com.floatingdpad.input.ShizukuKeySender
+import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
@@ -58,6 +61,7 @@ fun SettingsScreen(
     onGrantOverlayPermission: () -> Unit,
     onToggleOverlay: (Boolean) -> Unit,
     onShizukuAction: (ShizukuKeySender.State) -> Unit,
+    onOpenDeveloperOptions: () -> Unit,
 ) {
     val context = LocalContext.current
     val prefs = remember { Prefs.get(context) }
@@ -67,6 +71,34 @@ fun SettingsScreen(
         val listener: (ShizukuKeySender.State) -> Unit = { shizukuState = it }
         ShizukuKeySender.addListener(listener)
         onDispose { ShizukuKeySender.removeListener(listener) }
+    }
+
+    var showShizukuHelp by remember { mutableStateOf(false) }
+    var alreadyPrompted by rememberSaveable { mutableStateOf(false) }
+
+    // Nag once per visit if Shizuku is down. The delay is not cosmetic: the binder
+    // arrives asynchronously after process start, so an immediate check would report
+    // NOT_RUNNING for a perfectly healthy Shizuku. Any state change restarts this
+    // effect, which cancels the pending prompt if we connect in the meantime.
+    LaunchedEffect(shizukuState) {
+        if (alreadyPrompted) return@LaunchedEffect
+        if (shizukuState == ShizukuKeySender.State.READY) return@LaunchedEffect
+        delay(1500)
+        if (ShizukuKeySender.state != ShizukuKeySender.State.READY &&
+            ShizukuKeySender.state != ShizukuKeySender.State.CONNECTING
+        ) {
+            alreadyPrompted = true
+            showShizukuHelp = true
+        }
+    }
+
+    if (showShizukuHelp) {
+        ShizukuHelpDialog(
+            state = shizukuState,
+            onDismiss = { showShizukuHelp = false },
+            onOpenDeveloperOptions = onOpenDeveloperOptions,
+            onPrimaryAction = { onShizukuAction(shizukuState) },
+        )
     }
 
     Surface(
@@ -93,8 +125,16 @@ fun SettingsScreen(
                 overlayRunning = overlayRunning,
                 shizukuState = shizukuState,
                 onGrantOverlayPermission = onGrantOverlayPermission,
-                onToggleOverlay = onToggleOverlay,
+                onToggleOverlay = { wanted ->
+                    // Turning the pad on while the backend is down is the exact moment
+                    // the reminder is worth showing.
+                    if (wanted && shizukuState != ShizukuKeySender.State.READY) {
+                        showShizukuHelp = true
+                    }
+                    onToggleOverlay(wanted)
+                },
                 onShizukuAction = { onShizukuAction(shizukuState) },
+                onShowHelp = { showShizukuHelp = true },
             )
             Spacer(Modifier.height(16.dp))
 
@@ -123,6 +163,7 @@ private fun StatusSection(
     onGrantOverlayPermission: () -> Unit,
     onToggleOverlay: (Boolean) -> Unit,
     onShizukuAction: () -> Unit,
+    onShowHelp: () -> Unit,
 ) {
     SectionCard("Status") {
         StatusRow(
@@ -156,6 +197,7 @@ private fun StatusSection(
                 color = MaterialTheme.colorScheme.error,
             )
         }
+        TextButton(onClick = onShowHelp) { Text("How do I start Shizuku?") }
     }
 }
 
@@ -418,7 +460,7 @@ private fun Prefs.Preset.label(): String = when (this) {
     Prefs.Preset.COLUMN -> "Column"
 }
 
-private fun ShizukuKeySender.State.describe(): String = when (this) {
+internal fun ShizukuKeySender.State.describe(): String = when (this) {
     ShizukuKeySender.State.NOT_INSTALLED -> "Not installed"
     ShizukuKeySender.State.NOT_RUNNING -> "Installed, but not running"
     ShizukuKeySender.State.PERMISSION_REQUIRED -> "Waiting for you to grant access"
@@ -427,7 +469,7 @@ private fun ShizukuKeySender.State.describe(): String = when (this) {
     ShizukuKeySender.State.FAILED -> "Failed to connect - check logcat"
 }
 
-private fun ShizukuKeySender.State.actionLabel(): String? = when (this) {
+internal fun ShizukuKeySender.State.actionLabel(): String? = when (this) {
     ShizukuKeySender.State.NOT_INSTALLED -> "Install"
     ShizukuKeySender.State.NOT_RUNNING -> "Open Shizuku"
     ShizukuKeySender.State.PERMISSION_REQUIRED -> "Grant"
