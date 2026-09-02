@@ -4,7 +4,7 @@
   and the centre Select button knocked out via evenOdd.
 
   Geometry is deliberate. Arms reach 31 from centre with a half-width of 13, which puts
-  the outermost corners 33.6 from centre -- just inside the 66dp safe circle, so no
+  the outermost corners 33.6 from centre, just inside the 66dp safe circle, so no
   launcher mask clips the pad.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
