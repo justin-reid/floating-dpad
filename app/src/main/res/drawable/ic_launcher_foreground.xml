@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  D-pad cross: rounded arm tips, concave inner corners, with the four direction arrows
+  and the centre Select button knocked out via evenOdd.
+
+  Geometry is deliberate. Arms reach 31 from centre with a half-width of 13, which puts
+  the outermost corners 33.6 from centre -- just inside the 66dp safe circle, so no
+  launcher mask clips the pad.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -6,5 +14,6 @@
     android:viewportHeight="108">
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M44,20h20v24h24v20h-24v24h-20v-24h-24v-20h24z" />
+        android:fillType="evenOdd"
+        android:pathData="M47,23 H61 A6,6 0 0 1 67,29 V35 A6,6 0 0 0 73,41 H79 A6,6 0 0 1 85,47 V61 A6,6 0 0 1 79,67 H73 A6,6 0 0 0 67,73 V79 A6,6 0 0 1 61,85 H47 A6,6 0 0 1 41,79 V73 A6,6 0 0 0 35,67 H29 A6,6 0 0 1 23,61 V47 A6,6 0 0 1 29,41 H35 A6,6 0 0 0 41,35 V29 A6,6 0 0 1 47,23 Z M46,54 A8,8 0 1 1 62,54 A8,8 0 1 1 46,54 Z M54,27.5 L59.5,36 L48.5,36 Z M54,80.5 L48.5,72 L59.5,72 Z M27.5,54 L36,48.5 L36,59.5 Z M80.5,54 L72,59.5 L72,48.5 Z" />
 </vector>

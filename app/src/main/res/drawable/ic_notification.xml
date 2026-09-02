@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Status bar / QS tile icon. Same pad as the launcher icon but without the direction
+  arrows: at 24dp they collapse into mush, and the system tints this flat white anyway.
+  The group offset trims the launcher artwork's padding so the glyph fills its canvas.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="#FFFFFFFF">
-    <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M9,3h6v6h6v6h-6v6h-6v-6h-6v-6h6z" />
+    android:viewportWidth="62"
+    android:viewportHeight="62">
+    <group
+        android:translateX="-23"
+        android:translateY="-23">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M47,23 H61 A6,6 0 0 1 67,29 V35 A6,6 0 0 0 73,41 H79 A6,6 0 0 1 85,47 V61 A6,6 0 0 1 79,67 H73 A6,6 0 0 0 67,73 V79 A6,6 0 0 1 61,85 H47 A6,6 0 0 1 41,79 V73 A6,6 0 0 0 35,67 H29 A6,6 0 0 1 23,61 V47 A6,6 0 0 1 29,41 H35 A6,6 0 0 0 41,35 V29 A6,6 0 0 1 47,23 Z M46,54 A8,8 0 1 1 62,54 A8,8 0 1 1 46,54 Z" />
+    </group>
 </vector>
